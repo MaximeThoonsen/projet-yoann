@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Cat</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Adresse</th>
+        </tr>
+      </thead>
+      <tbody id="my-tbody">
+      </tbody>
+    </table>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      function tsvJSON(tsv) {
+        const lines = tsv.split('\n');
+        const headers = lines.slice(0, 1)[0].split('\t');
+        return lines.slice(1, lines.length).map(line => {
+          const data = line.split('\t');
+          return headers.reduce((obj, nextKey, index) => {
+            obj[nextKey] = data[index];
+            return obj;
+          }, {});
+        });
+      }
+
+      $.ajax({
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhetfBpn5Xj_W-HucyhGOOr4iVyhZK2tcc_h02ZGb6t0yWEZl1iSpW-bI1jbUbujdr3eH5l-V38LOo/pub?gid=0&single=true&output=tsv",
+        type: "GET",
+        success: function(data) {
+        const jsonData = tsvJSON(data);
+
+          console.log(jsonData);
+
+          $.each(jsonData, function(i, item) {
+            if (i==0){
+              return;
+            }
+
+            console.log(item);
+            var $tr = $('<tr>').append(
+                    $('<td>').text(item.CATEGORIE),
+                    $('<td>').text(item.Nom),
+                    $('<td>').text(item['Full Address'])
+            ); //.appendTo('#records_table');
+            $('#my-tbody').append($tr);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
